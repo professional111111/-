@@ -31,17 +31,15 @@
             border: 2px solid var(--neon-purple);
             box-shadow: 0 0 15px var(--neon-purple);
             width: 100%;
-            max-width: 600px; /* يخلي العرض ممتاز للكمبيوتر */
+            max-width: 600px;
             text-align: center;
-            transition: 0.3s;
         }
         h1 { font-size: 2rem; text-shadow: 0 0 10px var(--neon-purple); margin-bottom: 20px; }
-        h2 { font-size: 1.4rem; line-height: 1.5; }
         .btn {
             background: transparent;
             color: white;
             border: 2px solid var(--neon-blue);
-            padding: 18px; /* تكبير الزرار عشان التاتش في الموبايل */
+            padding: 18px;
             margin: 12px 0;
             width: 100%;
             border-radius: 12px;
@@ -52,19 +50,9 @@
         }
         .btn:hover { box-shadow: 0 0 15px var(--neon-blue); background: rgba(8, 247, 254, 0.1); }
         .hidden { display: none; }
-        
-        /* التفاعلات */
         .correct { border-color: var(--correct) !important; box-shadow: 0 0 20px var(--correct) !important; background: rgba(57, 255, 20, 0.1) !important; }
         .wrong { border-color: var(--wrong) !important; box-shadow: 0 0 20px var(--wrong) !important; background: rgba(255, 49, 49, 0.1) !important; }
-        .selected-pers { border-color: var(--correct) !important; box-shadow: 0 0 20px var(--correct) !important; }
-
         .report { text-align: right; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 10px; margin-top: 10px; border-right: 4px solid var(--wrong); }
-        
-        /* ضبط الخطوط في الموبايلات الصغيرة */
-        @media (max-width: 480px) {
-            h1 { font-size: 1.6rem; }
-            .btn { padding: 15px; font-size: 1rem; }
-        }
     </style>
 </head>
 <body>
@@ -79,7 +67,7 @@
     <div class="card hidden" id="quiz-view">
         <h2 id="question-text"></h2>
         <div id="options-container"></div>
-        <p style="margin-top:20px; color: var(--neon-blue);">السؤال: <span id="q-number">1</span> / 10</p>
+        <p style="margin-top:20px; color: var(--neon-blue);">السؤال: <span id="q-number">1</span></p>
     </div>
 
     <div class="card hidden" id="result-view">
@@ -112,7 +100,7 @@
             score = 0;
             wrongAnswers = [];
             document.getElementById('main-view').classList.add('hidden');
-            document.getElementById('result-view').classList.add('hidden'); // تأكيد إخفاء النتيجة
+            document.getElementById('result-view').classList.add('hidden'); 
             document.getElementById('quiz-view').classList.remove('hidden');
             loadQuestion();
         }
@@ -121,10 +109,8 @@
             let qData = questionsBank[currentType][currentIdx];
             document.getElementById('question-text').innerText = qData.q;
             document.getElementById('q-number').innerText = currentIdx + 1;
-            
             let optionsDiv = document.getElementById('options-container');
             optionsDiv.innerHTML = "";
-            
             qData.options.forEach((opt, index) => {
                 let button = document.createElement('button');
                 button.className = 'btn';
@@ -137,7 +123,6 @@
         function handleAnswer(choice, btn) {
             const buttons = document.querySelectorAll('.btn');
             buttons.forEach(b => b.style.pointerEvents = 'none');
-
             let qData = questionsBank[currentType][currentIdx];
 
             if (currentType === 'iq') {
@@ -149,7 +134,7 @@
                     wrongAnswers.push({ q: qData.q, correctAns: qData.options[qData.correct] });
                 }
             } else {
-                btn.classList.add('selected-pers');
+                btn.classList.add('correct'); // ينور أخضر في الشخصية
             }
 
             setTimeout(() => {
@@ -159,38 +144,31 @@
                 } else {
                     showResults();
                 }
-            }, 800);
+            }, 700);
         }
 
         function showResults() {
             document.getElementById('quiz-view').classList.add('hidden');
             document.getElementById('result-view').classList.remove('hidden');
-            
-            let scoreText = "";
-            let reportHtml = "";
-
-            if (currentType === 'iq') {
-                let percent = (score / questionsBank.iq.length) * 100;
-                scoreText = `نسبة ذكائك: ${percent}%`;
-                if (wrongAnswers.length > 0) {
-                    reportHtml = "<h3 style='color:var(--wrong)'>الأخطاء وإجاباتها الصحيحة:</h3>";
-                    wrongAnswers.forEach(item => {
-                        reportHtml += `<div class="report">❓ ${item.q}<br><span style="color:var(--correct)">✅ الإجابة الصح: ${item.correctAns}</span></div>`;
-                    });
-                }
-            } else {
-                scoreText = "تحليل الشخصية جاهز";
-                reportHtml = "<p>أنت شخصية تتميز بالذكاء الاجتماعي والقدرة على اتخاذ القرارات في المواقف الصعبة. استمر في تطوير ذاتك!</p>";
-            }
-
+            let scoreText = currentType === 'iq' ? `نسبة ذكائك: ${(score / questionsBank.iq.length) * 100}%` : "تم تحليل الشخصية";
             document.getElementById('score-display').innerText = scoreText;
+            
+            let reportHtml = "";
+            if (currentType === 'iq' && wrongAnswers.length > 0) {
+                reportHtml = "<h3>مراجعة الأخطاء:</h3>";
+                wrongAnswers.forEach(item => {
+                    reportHtml += `<div class="report">❌ ${item.q}<br><span style="color:var(--correct)">الإجابة الصح: ${item.correctAns}</span></div>`;
+                });
+            }
             document.getElementById('report-container').innerHTML = reportHtml;
         }
 
-        // دالة الرجوع للصفحة الرئيسية وتصفير كل شيء
+        // دالة الرجوع الفوري اللي طلبتها
         function goToHome() {
+            // إخفاء واجهة النتيجة وإظهار الرئيسية فوراً
             document.getElementById('result-view').classList.add('hidden');
             document.getElementById('main-view').classList.remove('hidden');
+            // تصفير البيانات للاختبار الجاي
             currentIdx = 0;
             score = 0;
             wrongAnswers = [];
@@ -198,3 +176,4 @@
     </script>
 </body>
 </html>
+
