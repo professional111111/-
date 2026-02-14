@@ -2,7 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>منصة الاختبارات النيون</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة الاختبارات الذكية</title>
     <style>
         :root {
             --neon-purple: #bc13fe;
@@ -11,57 +12,66 @@
             --wrong: #ff3131;
             --bg: #0d0221;
         }
+        * { box-sizing: border-box; }
         body {
             background-color: var(--bg);
             color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow-x: hidden;
+            padding: 20px;
         }
         .card {
             background: rgba(255, 255, 255, 0.05);
-            padding: 30px;
+            padding: 25px;
             border-radius: 20px;
             border: 2px solid var(--neon-purple);
-            box-shadow: 0 0 20px var(--neon-purple);
-            width: 90%;
-            max-width: 500px;
+            box-shadow: 0 0 15px var(--neon-purple);
+            width: 100%;
+            max-width: 600px; /* يخلي العرض ممتاز للكمبيوتر */
             text-align: center;
+            transition: 0.3s;
         }
-        h1, h2 { text-shadow: 0 0 10px var(--neon-purple); }
+        h1 { font-size: 2rem; text-shadow: 0 0 10px var(--neon-purple); margin-bottom: 20px; }
+        h2 { font-size: 1.4rem; line-height: 1.5; }
         .btn {
             background: transparent;
             color: white;
             border: 2px solid var(--neon-blue);
-            padding: 15px;
-            margin: 10px 0;
+            padding: 18px; /* تكبير الزرار عشان التاتش في الموبايل */
+            margin: 12px 0;
             width: 100%;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 1.1rem;
             transition: 0.3s;
             box-shadow: inset 0 0 5px var(--neon-blue);
         }
         .btn:hover { box-shadow: 0 0 15px var(--neon-blue); background: rgba(8, 247, 254, 0.1); }
         .hidden { display: none; }
         
-        /* ألوان الإجابات */
+        /* التفاعلات */
         .correct { border-color: var(--correct) !important; box-shadow: 0 0 20px var(--correct) !important; background: rgba(57, 255, 20, 0.1) !important; }
         .wrong { border-color: var(--wrong) !important; box-shadow: 0 0 20px var(--wrong) !important; background: rgba(255, 49, 49, 0.1) !important; }
         .selected-pers { border-color: var(--correct) !important; box-shadow: 0 0 20px var(--correct) !important; }
 
-        .report { text-align: right; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; margin-top: 10px; font-size: 14px; }
+        .report { text-align: right; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 10px; margin-top: 10px; border-right: 4px solid var(--wrong); }
+        
+        /* ضبط الخطوط في الموبايلات الصغيرة */
+        @media (max-width: 480px) {
+            h1 { font-size: 1.6rem; }
+            .btn { padding: 15px; font-size: 1rem; }
+        }
     </style>
 </head>
 <body>
 
     <div class="card" id="main-view">
         <h1>الاختبارات الذكية</h1>
-        <p>اختر نوع الاختبار العلمي:</p>
+        <p>اختر نوع الاختبار العلمي للبدء:</p>
         <button class="btn" onclick="startTest('iq')">اختبار الذكاء (IQ)</button>
         <button class="btn" onclick="startTest('pers')">اختبار الشخصية</button>
     </div>
@@ -69,14 +79,14 @@
     <div class="card hidden" id="quiz-view">
         <h2 id="question-text"></h2>
         <div id="options-container"></div>
-        <p>السؤال: <span id="q-number">1</span></p>
+        <p style="margin-top:20px; color: var(--neon-blue);">السؤال: <span id="q-number">1</span> / 10</p>
     </div>
 
     <div class="card hidden" id="result-view">
-        <h2>النتيجة النهائية</h2>
+        <h2 id="result-title">النتيجة النهائية</h2>
         <h1 id="score-display"></h1>
         <div id="report-container"></div>
-        <button class="btn" onclick="location.reload()" style="border-color: var(--neon-purple);">العودة للرئيسية</button>
+        <button class="btn" onclick="goToHome()" style="border-color: var(--neon-purple); margin-top: 20px;">العودة للصفحة الرئيسية</button>
     </div>
 
     <script>
@@ -86,8 +96,8 @@
                 { q: "إذا كان كل 'أ' هو 'ب'، وكل 'ب' هو 'ج'، فهل كل 'أ' هو 'ج'؟", options: ["نعم دائماً", "لا أبداً", "ليس بالضرورة"], correct: 0 }
             ],
             pers: [
-                { q: "عندما تواجه مشكلة كبيرة، كيف تتصرف؟", options: ["أحللها بمنطق وهدوء", "أتبع حدسي ومشاعري", "أطلب نصيحة المقربين"], analysis: "شخصية عقلانية" },
-                { q: "في التجمعات الاجتماعية، أنت غالباً:", options: ["المتحدث الذي يقود الجلسة", "المستمع الذي يراقب بصمت", "المشارك بشكل معتدل"], analysis: "شخصية اجتماعية" }
+                { q: "عندما تواجه مشكلة كبيرة، كيف تتصرف؟", options: ["أحللها بمنطق وهدوء", "أتبع حدسي ومشاعري", "أطلب نصيحة المقربين"] },
+                { q: "في التجمعات الاجتماعية، أنت غالباً:", options: ["المتحدث الذي يقود الجلسة", "المستمع الذي يراقب بصمت", "المشارك بشكل معتدل"] }
             ]
         };
 
@@ -102,6 +112,7 @@
             score = 0;
             wrongAnswers = [];
             document.getElementById('main-view').classList.add('hidden');
+            document.getElementById('result-view').classList.add('hidden'); // تأكيد إخفاء النتيجة
             document.getElementById('quiz-view').classList.remove('hidden');
             loadQuestion();
         }
@@ -124,8 +135,7 @@
         }
 
         function handleAnswer(choice, btn) {
-            // تعطيل باقي الأزرار لمنع الضغط المتكرر
-            const buttons = document.querySelectorAll('.option-btn, .btn');
+            const buttons = document.querySelectorAll('.btn');
             buttons.forEach(b => b.style.pointerEvents = 'none');
 
             let qData = questionsBank[currentType][currentIdx];
@@ -139,7 +149,6 @@
                     wrongAnswers.push({ q: qData.q, correctAns: qData.options[qData.correct] });
                 }
             } else {
-                // اختبار شخصية - ينور أخضر بس
                 btn.classList.add('selected-pers');
             }
 
@@ -161,21 +170,30 @@
             let reportHtml = "";
 
             if (currentType === 'iq') {
-                scoreText = `نسبة ذكائك: ${(score / questionsBank.iq.length) * 100}%`;
+                let percent = (score / questionsBank.iq.length) * 100;
+                scoreText = `نسبة ذكائك: ${percent}%`;
                 if (wrongAnswers.length > 0) {
-                    reportHtml = "<h3>مراجعة الأخطاء:</h3>";
+                    reportHtml = "<h3 style='color:var(--wrong)'>الأخطاء وإجاباتها الصحيحة:</h3>";
                     wrongAnswers.forEach(item => {
-                        reportHtml += `<div class="report">❌ ${item.q}<br><span style="color:var(--correct)">الإجابة الصح: ${item.correctAns}</span></div>`;
+                        reportHtml += `<div class="report">❓ ${item.q}<br><span style="color:var(--correct)">✅ الإجابة الصح: ${item.correctAns}</span></div>`;
                     });
                 }
-                reportHtml += "<p>استمر في المحاولة، العقل يتطور بالتدريب!</p>";
             } else {
-                scoreText = "تم تحليل شخصيتك بنجاح";
-                reportHtml = "بناءً على اختياراتك، أنت تمتلك سمات شخصية متوازنة تميل إلى التفكير المنظم والقدرة على التأقلم.";
+                scoreText = "تحليل الشخصية جاهز";
+                reportHtml = "<p>أنت شخصية تتميز بالذكاء الاجتماعي والقدرة على اتخاذ القرارات في المواقف الصعبة. استمر في تطوير ذاتك!</p>";
             }
 
             document.getElementById('score-display').innerText = scoreText;
             document.getElementById('report-container').innerHTML = reportHtml;
+        }
+
+        // دالة الرجوع للصفحة الرئيسية وتصفير كل شيء
+        function goToHome() {
+            document.getElementById('result-view').classList.add('hidden');
+            document.getElementById('main-view').classList.remove('hidden');
+            currentIdx = 0;
+            score = 0;
+            wrongAnswers = [];
         }
     </script>
 </body>
