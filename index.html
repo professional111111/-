@@ -34,7 +34,6 @@
             max-width: 600px;
             text-align: center;
         }
-        h1 { font-size: 2rem; text-shadow: 0 0 10px var(--neon-purple); margin-bottom: 20px; }
         .btn {
             background: transparent;
             color: white;
@@ -48,21 +47,21 @@
             transition: 0.3s;
             box-shadow: inset 0 0 5px var(--neon-blue);
         }
-        .btn:hover { box-shadow: 0 0 15px var(--neon-blue); background: rgba(8, 247, 254, 0.1); }
-        .hidden { display: none; }
+        .btn:hover { box-shadow: 0 0 15px var(--neon-blue); }
+        .hidden { display: none !important; } /* تضمن الاختفاء تماماً */
         
-        /* كلاسات التلوين عند الضغط */
-        .correct { border-color: var(--correct) !important; box-shadow: 0 0 20px var(--correct) !important; background: rgba(57, 255, 20, 0.2) !important; }
-        .wrong { border-color: var(--wrong) !important; box-shadow: 0 0 20px var(--wrong) !important; background: rgba(255, 49, 49, 0.2) !important; }
-        
-        .report { text-align: right; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 10px; margin-top: 10px; border-right: 4px solid var(--wrong); }
+        .correct-glow { 
+            border-color: var(--correct) !important; 
+            box-shadow: 0 0 30px var(--correct) !important; 
+            background: rgba(57, 255, 20, 0.3) !important; 
+            color: white !important;
+        }
     </style>
 </head>
 <body>
 
     <div class="card" id="main-view">
         <h1>الاختبارات الذكية</h1>
-        <p>اختر نوع الاختبار العلمي للبدء:</p>
         <button class="btn" onclick="startTest('iq')">اختبار الذكاء (IQ)</button>
         <button class="btn" onclick="startTest('pers')">اختبار الشخصية</button>
     </div>
@@ -70,126 +69,71 @@
     <div class="card hidden" id="quiz-view">
         <h2 id="question-text"></h2>
         <div id="options-container"></div>
-        <p style="margin-top:20px; color: var(--neon-blue);">السؤال: <span id="q-number">1</span></p>
     </div>
 
     <div class="card hidden" id="result-view">
-        <h2 id="result-title">النتيجة النهائية</h2>
+        <h2>النتيجة النهائية</h2>
         <h1 id="score-display"></h1>
         <div id="report-container"></div>
-        <button id="back-btn" class="btn" onclick="backToHome(this)" style="border-color: var(--neon-purple); margin-top: 20px;">العودة للصفحة الرئيسية</button>
+        <button id="final-back-btn" class="btn" onclick="forceBackToHome()">العودة للصفحة الرئيسية</button>
     </div>
 
     <script>
         const questionsBank = {
-            iq: [
-                { q: "ما هو الرقم المكمل: 3، 6، 12، ...؟", options: ["18", "24", "30"], correct: 1 },
-                { q: "إذا كان كل 'أ' هو 'ب'، وكل 'ب' هو 'ج'، فهل كل 'أ' هو 'ج'؟", options: ["نعم دائماً", "لا أبداً", "ليس بالضرورة"], correct: 0 }
-            ],
-            pers: [
-                { q: "عندما تواجه مشكلة كبيرة، كيف تتصرف؟", options: ["أحللها بمنطق وهدوء", "أتبع حدسي ومشاعري", "أطلب نصيحة المقربين"] },
-                { q: "في التجمعات الاجتماعية، أنت غالباً:", options: ["المتحدث الذي يقود الجلسة", "المستمع الذي يراقب بصمت", "المشارك بشكل معتدل"] }
-            ]
+            iq: [{ q: "3، 6، 12، ...؟", options: ["18", "24", "30"], correct: 1 }],
+            pers: [{ q: "كيف تتصرف في المشاكل؟", options: ["هدوء", "مشاعر", "نصيحة"] }]
         };
 
         let currentType = "";
         let currentIdx = 0;
-        let score = 0;
-        let wrongAnswers = [];
 
         function startTest(type) {
             currentType = type;
             currentIdx = 0;
-            score = 0;
-            wrongAnswers = [];
-            
             document.getElementById('main-view').classList.add('hidden');
-            document.getElementById('result-view').classList.add('hidden'); 
+            document.getElementById('result-view').classList.add('hidden');
             document.getElementById('quiz-view').classList.remove('hidden');
-            
             loadQuestion();
         }
 
         function loadQuestion() {
             let qData = questionsBank[currentType][currentIdx];
             document.getElementById('question-text').innerText = qData.q;
-            document.getElementById('q-number').innerText = currentIdx + 1;
-            
             let optionsDiv = document.getElementById('options-container');
             optionsDiv.innerHTML = "";
-            
             qData.options.forEach((opt, index) => {
-                let button = document.createElement('button');
-                button.className = 'btn';
-                button.innerText = opt;
-                button.onclick = () => handleAnswer(index, button);
-                optionsDiv.appendChild(button);
+                optionsDiv.innerHTML += `<button class="btn" onclick="handleAnswer(${index}, this)">${opt}</button>`;
             });
         }
 
         function handleAnswer(choice, btn) {
-            const buttons = document.querySelectorAll('.btn');
-            buttons.forEach(b => b.style.pointerEvents = 'none');
-            
-            let qData = questionsBank[currentType][currentIdx];
-
-            if (currentType === 'iq') {
-                if (choice === qData.correct) {
-                    btn.classList.add('correct');
-                    score++;
-                } else {
-                    btn.classList.add('wrong');
-                    wrongAnswers.push({ q: qData.q, correctAns: qData.options[qData.correct] });
-                }
-            } else {
-                btn.classList.add('correct'); 
-            }
-
+            btn.classList.add('correct-glow');
             setTimeout(() => {
-                currentIdx++;
-                if (currentIdx < questionsBank[currentType].length) {
-                    loadQuestion();
-                } else {
-                    showResults();
-                }
+                document.getElementById('quiz-view').classList.add('hidden');
+                document.getElementById('result-view').classList.remove('hidden');
+                document.getElementById('score-display').innerText = "انتهى الاختبار";
             }, 600);
         }
 
-        function showResults() {
-            document.getElementById('quiz-view').classList.add('hidden');
-            document.getElementById('result-view').classList.remove('hidden');
+        // الدالة المعدلة والنهائية للرجوع
+        function forceBackToHome() {
+            const backBtn = document.getElementById('final-back-btn');
             
-            let scoreText = currentType === 'iq' ? `نسبة ذكائك: ${(score / questionsBank.iq.length) * 100}%` : "تم تحليل الشخصية";
-            document.getElementById('score-display').innerText = scoreText;
-            
-            let reportHtml = "";
-            if (currentType === 'iq' && wrongAnswers.length > 0) {
-                reportHtml = "<h3>مراجعة الأخطاء:</h3>";
-                wrongAnswers.forEach(item => {
-                    reportHtml += `<div class="report">❌ ${item.q}<br><span style="color:var(--correct)">الإجابة الصح: ${item.correctAns}</span></div>`;
-                });
-            }
-            document.getElementById('report-container').innerHTML = reportHtml;
-        }
+            // 1. نور أخضر فوري
+            backBtn.classList.add('correct-glow');
 
-        // دالة العودة مع تأثير النور الأخضر
-        function backToHome(btn) {
-            // 1. خليه ينور أخضر
-            btn.classList.add('correct');
-            
-            // 2. استنى نص ثانية عشان اليوزر يشوف النور وبعدين ارجع
+            // 2. إجبار المتصفح على تبديل الشاشات بعد وقت قصير
             setTimeout(() => {
-                // إخفاء النتيجة والأسئلة وإظهار الرئيسية
-                document.getElementById('result-view').classList.add('hidden');
+                // إخفاء كل شيء أولاً
                 document.getElementById('quiz-view').classList.add('hidden');
+                document.getElementById('result-view').classList.add('hidden');
+                
+                // إظهار الرئيسية
                 document.getElementById('main-view').classList.remove('hidden');
                 
-                // تصفير كل حاجة واللون
-                btn.classList.remove('correct');
-                currentIdx = 0;
-                score = 0;
-                wrongAnswers = [];
-            }, 500); 
+                // إعادة الزرار لشكلة الطبيعي للاستخدام القادم
+                backBtn.classList.remove('correct-glow');
+            }, 400);
         }
     </script>
 </body>
