@@ -25,6 +25,7 @@
             overflow-x: hidden;
         }
 
+        /* اللوجو الجديد: عقل واقعي بتفاصيل أكثر مع الحفاظ على الأنميشن */
         .brain-logo {
             width: 100px;
             height: 100px;
@@ -87,11 +88,10 @@
     <audio id="correctAudio" src="data:audio/mpeg;base64,BASE64_HERE"></audio>
 
     <div class="card" id="name-view">
-        <svg class="brain-logo" viewBox="0 0 64 64">
-            <g stroke="#08f7fe" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
-                <path d="M31 52C22 52 14 46 12 34C10 22 18 12 31 10V52Z" />
-                <path d="M33 52C42 52 50 46 52 34C54 22 46 12 33 10V52Z" />
-            </g>
+        <svg class="brain-logo" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 56C20 56 12 48 11 36C10 24 18 12 32 10C46 12 54 24 53 36C52 48 44 56 32 56Z" stroke="#08f7fe" stroke-width="1.5"/>
+            <path d="M32 10V56M32 25C25 25 20 20 20 15M32 25C39 25 44 20 44 15M32 40C22 40 18 35 18 30M32 40C42 40 46 35 46 30M25 52C20 48 15 40 15 32M39 52C44 48 49 40 49 32" stroke="#08f7fe" stroke-width="1" opacity="0.6"/>
+            <circle cx="32" cy="30" r="2" fill="#08f7fe"/>
         </svg>
         <h1 style="color: var(--neon-blue);">My tests</h1>
         <p>أهلاً بك.. ما هو اسمك؟</p>
@@ -450,9 +450,9 @@
             html += `<hr style="opacity:0.2">`;
             html += `<div class="psy-item">الأصفر: <b>${document.getElementById('psy-yellow').value}</b> (شخص لا تنساه أبداً)</div>`;
             html += `<div class="psy-item">البرتقالي: <b>${document.getElementById('psy-orange').value}</b> (صديق وفي حقاً)</div>`;
-            html += `<div class="psy-item">الأحمر: <b>${document.getElementById('psy-red').value}</b> (شخص تحبه بصدق)</div>`;
+            html += `<div class="psy-item">أحمر: <b>${document.getElementById('psy-red').value}</b> (شخص تحبه بصدق)</div>`;
             html += `<div class="psy-item">الأبيض: <b>${document.getElementById('psy-white').value}</b> (توأم روحك)</div>`;
-            html += `<div class="psy-item">الأخضر: <b>${document.getElementById('psy-green').value}</b> (شخص ستتذكره دائماً)</div></div>`;
+            html += `<div class="psy-item">أخضر: <b>${document.getElementById('psy-green').value}</b> (شخص ستتذكره دائماً)</div></div>`;
             document.getElementById('analysis-text').innerHTML = html;
         }
 
@@ -509,7 +509,6 @@
                 </div>`;
         }
 
-        // دالة عرض نتائج الاختبار الخامس الجديد
         function showDeepResults5() {
             sounds.success();
             document.getElementById('deep-psy-q6').classList.add('hidden');
