@@ -198,20 +198,20 @@
 
     <div class="card hidden" id="deep-psy-q6" style="text-align: right;">
         <h2 style="color: var(--neon-blue); text-align: center;">اختبار ألغاز العقل الباطن</h2>
-        <p>1. <b>لغز القارب:</b> تخيّل أنك تبحر بقارب وبدأ يغرق بك، ورأيت قارباً آخر يعبر بجانبك فذهبت إليه لتنجو وصعدت على متنه..</p>
-        <input type="text" id="psy5-boat" placeholder="كم شخصاً رأيت على متن القارب؟">
+        <p>1- تخيّل أنك تبحر بقارب.. وبدأ القارب يغرق بك ورأيت قارب آخر يعبر بجانبك فذهبت إليه لتنجو وصعدت على متنه.</p>
+        <input type="text" id="psy5-boat" placeholder="كم شخص رأيت على مَتن القارب؟">
         
-        <p>2. <b>لغز الصحراء:</b> تم إنزالك على الشاطئ وإعطاؤك بعض الأمتعة، ورأيت صحراء قاحلة وبدأت تمشي فيها للبحث عن بشر، وكانت رحلتك متعبة جداً..</p>
-        <input type="text" id="psy5-shoes" placeholder="كم عدد أزواج الأحذية التي استخدمتها؟">
+        <p>2 - تم انزالك على الشاطئ وإعطائك بعض الامتعه والاغراض لكي تستطيع اكمال طريقك ورأيت صحراء قاحله امام عينيك وبدأت تمشي بالصحراء للبحث عن بشر طالت رحلتك وكانت متعبه جدا.</p>
+        <input type="text" id="psy5-shoes" placeholder="كم عدد ازواج الاحذيه التي استخدمتها في رحلتك في الصحراء؟">
         
-        <p>3. <b>لغز القصر:</b> دخلت قصراً ووصلت لغرفة الملك والملكة، وجدتهما ينظران لبعضهما..</p>
-        <input type="text" id="psy5-palace" placeholder="كيف كانت نظراتهم لبعض؟">
+        <p>3 - فجأة رايت مدينه كبيره ودخلت هذه المدينه ثم رايت قصرا كبيرا وقررت الدخول اليه وبعد السماح لك بعبور البوابات دخلت الى القصر وكان امامك ممر طويل ينتهي بغرفه الملك وزوجته دخلت هذه الغرفه ووجدت الملك يجلس على كرسي المملكه والملكه تجلس بجانبه وكانا ينظران الى بعضهما.</p>
+        <input type="text" id="psy5-palace" placeholder="كيف رايت نظراتهم لبعض ؟ نظرات غاضبه محبه مجنونه اوصفها بكلماتك.">
         
-        <p>4. <b>لغز الدرج:</b> نزلت درج حلزوني مظلم ومر بجانبك شخص ذكرك بشخص تعرفه..</p>
-        <input type="text" id="psy5-stairs" placeholder="من هو هذا الشخص؟">
+        <p>4 - تركت هذه الغرفه ونزلت الى الاسفل عن طريق درج حلزوني هذا الدرج شبه مظلم ومعلق على جوانبه بعض المشاعل لتقلل من ظلمته واثناء نزولك مر بجانبه شخص [ امرأه / رجل ] فذكرك بشخص تعرفه.</p>
+        <input type="text" id="psy5-stairs" placeholder="من هو هذا الشخص ؟">
         
-        <p>5. <b>لغز الوعاء:</b> وجدت وعاء عصير برتقال..</p>
-        <input type="text" id="psy5-juice" placeholder="إلى أي مدى كان ممتلئاً؟">
+        <p>5 - هذا الدرج قادك الى غرفه الطعام حيث رايت فيها طاوله طعام طويله وفي وسطها وعاء ذهبت لترى ملذي بداخله فإذا به عصير برتقال.</p>
+        <input type="text" id="psy5-juice" placeholder="الى اي مدى كان هذا الوعاء ممتلئ بالعصير ؟">
         
         <button class="btn" onclick="showDeepResults5()" style="width: 100%;">رؤية التحليل النهائي</button>
     </div>
@@ -509,6 +509,7 @@
                 </div>`;
         }
 
+        // تم تعديل التحليل هنا ليكون كما طلبت في رسالتك تماماً
         function showDeepResults5() {
             sounds.success();
             document.getElementById('deep-psy-q6').classList.add('hidden');
@@ -516,11 +517,11 @@
             document.getElementById('score-header').innerText = "تحليل ألغاز العقل الباطن";
             
             let html = `<div style="text-align:right"><h3>نتائج تحليلك يا ${userName}:</h3>`;
-            html += `<div class="psy-item">عدد الأشخاص في القارب (<b>${document.getElementById('psy5-boat').value}</b>): يمثل عدد الأشخاص المخلصين لك والذين سيقفون بجانبك في الأزمات.</div>`;
-            html += `<div class="psy-item">عدد أزواج الأحذية (<b>${document.getElementById('psy5-shoes').value}</b>): يمثل عدد تجارب الحب في حياتك قبل أن تجد الشريك الحقيقي.</div>`;
-            html += `<div class="psy-item">نظرات الملك والملكة (<b>${document.getElementById('psy5-palace').value}</b>): تمثل نظرتك لعلاقتك مع شريك حياتك في المستقبل.</div>`;
-            html += `<div class="psy-item">الشخص على الدرج (<b>${document.getElementById('psy5-stairs').value}</b>): هو الشخص الذي لن تنساه أبداً مهما طال الزمن.</div>`;
-            html += `<div class="psy-item">امتلاء الوعاء (<b>${document.getElementById('psy5-juice').value}</b>): يمثل مقدار ما تعطيه وتضحي به من أجل الآخرين.</div></div>`;
+            html += `<div class="psy-item">1/ عدد الاشخاص الذين رأيتهم على القارب يمثل : عدد الاشخاص المخلصين الذين تملكهم. (<b>${document.getElementById('psy5-boat').value}</b>)</div>`;
+            html += `<div class="psy-item">2/ عدد ازواج الاحذيه التي رايتها تمثل : عدد المرات التي احببت في حياتك ! (<b>${document.getElementById('psy5-shoes').value}</b>)</div>`;
+            html += `<div class="psy-item">3/ حاله الملك والملكه تمثل : كيف تتخيل شريك حياتك معك. (<b>${document.getElementById('psy5-palace').value}</b>)</div>`;
+            html += `<div class="psy-item">4/ الشخص الذي رايته في الدرج يمثل: هو الشخص الذي ستبقى تتذكره لاخر يوم في حياتك. (<b>${document.getElementById('psy5-stairs').value}</b>)</div>`;
+            html += `<div class="psy-item">5/ الى اي مدى كان الوعاء ممتلئ بالعصير يمثل : كم تضحي انت لاجل من تحب ولاجل اصدقائك. (<b>${document.getElementById('psy5-juice').value}</b>)</div></div>`;
             
             document.getElementById('analysis-text').innerHTML = html;
         }
