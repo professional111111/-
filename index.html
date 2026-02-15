@@ -50,8 +50,11 @@
         }
         .btn:hover { box-shadow: 0 0 15px var(--neon-blue); background: rgba(8, 247, 254, 0.1); }
         .hidden { display: none; }
-        .correct { border-color: var(--correct) !important; box-shadow: 0 0 20px var(--correct) !important; background: rgba(57, 255, 20, 0.1) !important; }
-        .wrong { border-color: var(--wrong) !important; box-shadow: 0 0 20px var(--wrong) !important; background: rgba(255, 49, 49, 0.1) !important; }
+        
+        /* كلاسات التلوين عند الضغط */
+        .correct { border-color: var(--correct) !important; box-shadow: 0 0 20px var(--correct) !important; background: rgba(57, 255, 20, 0.2) !important; }
+        .wrong { border-color: var(--wrong) !important; box-shadow: 0 0 20px var(--wrong) !important; background: rgba(255, 49, 49, 0.2) !important; }
+        
         .report { text-align: right; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 10px; margin-top: 10px; border-right: 4px solid var(--wrong); }
     </style>
 </head>
@@ -74,7 +77,7 @@
         <h2 id="result-title">النتيجة النهائية</h2>
         <h1 id="score-display"></h1>
         <div id="report-container"></div>
-        <button class="btn" onclick="backToHome()" style="border-color: var(--neon-purple); margin-top: 20px;">العودة للصفحة الرئيسية</button>
+        <button id="back-btn" class="btn" onclick="backToHome(this)" style="border-color: var(--neon-purple); margin-top: 20px;">العودة للصفحة الرئيسية</button>
     </div>
 
     <script>
@@ -100,7 +103,6 @@
             score = 0;
             wrongAnswers = [];
             
-            // إخفاء كل الشاشات وإظهار شاشة الأسئلة فقط
             document.getElementById('main-view').classList.add('hidden');
             document.getElementById('result-view').classList.add('hidden'); 
             document.getElementById('quiz-view').classList.remove('hidden');
@@ -140,7 +142,7 @@
                     wrongAnswers.push({ q: qData.q, correctAns: qData.options[qData.correct] });
                 }
             } else {
-                btn.classList.add('correct'); // ينور أخضر في الشخصية
+                btn.classList.add('correct'); 
             }
 
             setTimeout(() => {
@@ -150,7 +152,7 @@
                 } else {
                     showResults();
                 }
-            }, 700);
+            }, 600);
         }
 
         function showResults() {
@@ -170,19 +172,24 @@
             document.getElementById('report-container').innerHTML = reportHtml;
         }
 
-        // الدالة الأكيدة للرجوع
-        function backToHome() {
-            // 1. إخفاء شاشة النتيجة
-            document.getElementById('result-view').classList.add('hidden');
-            // 2. إخفاء شاشة الأسئلة (للاحتياط)
-            document.getElementById('quiz-view').classList.add('hidden');
-            // 3. إظهار الشاشة الرئيسية
-            document.getElementById('main-view').classList.remove('hidden');
+        // دالة العودة مع تأثير النور الأخضر
+        function backToHome(btn) {
+            // 1. خليه ينور أخضر
+            btn.classList.add('correct');
             
-            // 4. تصفير العدادات
-            currentIdx = 0;
-            score = 0;
-            wrongAnswers = [];
+            // 2. استنى نص ثانية عشان اليوزر يشوف النور وبعدين ارجع
+            setTimeout(() => {
+                // إخفاء النتيجة والأسئلة وإظهار الرئيسية
+                document.getElementById('result-view').classList.add('hidden');
+                document.getElementById('quiz-view').classList.add('hidden');
+                document.getElementById('main-view').classList.remove('hidden');
+                
+                // تصفير كل حاجة واللون
+                btn.classList.remove('correct');
+                currentIdx = 0;
+                score = 0;
+                wrongAnswers = [];
+            }, 500); 
         }
     </script>
 </body>
